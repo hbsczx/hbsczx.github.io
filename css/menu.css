@@ -1,0 +1,18 @@
+.navbar-default .navbar-nav > li.active > a {
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+.navbar-default .navbar-nav > li > a {
+  background: transparent !important;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #222 !important;
+  background: transparent !important;
+}
+.navbar-brand {
+  font-weight: 900;
+  padding: 0px;
+  line-height: 50px;
+  height: 50px;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="开源镜像,北交大开源镜像,mirror,open source,BJTU">
+	<meta name="subtitle" content="SHACHENG MIDDLE SCHOOL Open Source Software Mirror">
+	<meta name="description" content="Beijing Jiaotong University free and open source software mirror,河北沙城中学开源镜像站。">
+	<meta name="author" content="AlynxZhou">
+	<title>状态 - 河北沙城中学开源软件镜像站</title>
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/css/index.css">
+	<link rel="stylesheet" href="/css/spinkit.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+
+  </head>
+  <body>
+    
+  <nav class="menu-nav navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">河北沙城中学开源软件镜像站</a>
+      </div>
+      <div class="collapse navbar-collapse navbar-right" id="navbar">
+        <ul class="nav navbar-nav">
+          
+            
+              <li><a href="/">首页</a></li>
+            
+          
+            
+              <li><a href="/help/">帮助</a></li>
+            
+          
+            
+              <li><a href="/news/">新闻</a></li>
+            
+          
+            
+              <li class="active"><a href="/status/">状态</a></li>
+            
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+    
+    <div class="content">
+      <div class="container">
+        <h1>状态</h1>
+        <h2>流量统计</h2>
+<h2>Flow Status</h2>
+<h4>由 vnstat 生成</h4>
+<img src="https://mirror.bjtu.edu.cn/status/vnstati.png" alt="vnstati.png">
+<h2>服务器状态</h2>
+<h2>Server Status</h2>
+<h4>由 collectd influxdb grafana 生成</h4>
+<h3>CPU / 内存</h3>
+<img alt="CPU" src="https://mirror.bjtu.edu.cn/status/cpu.png" width="555" height="300">
+<img alt="Memory" src="https://mirror.bjtu.edu.cn/status/memory.png" width="555" height="300">
+<h3>硬盘使用量 / 服务器负载</h3>
+<img alt="Disk" src="https://mirror.bjtu.edu.cn/status/disk.png" width="555" height="300">
+<img alt="Load" src="https://mirror.bjtu.edu.cn/status/load.png" width="555" height="300">
+<h3> 网络流量统计 / Nginx 状态 / 活跃连接数</h3>
+<img alt="Bandwidth" src="https://mirror.bjtu.edu.cn/status/bandwidth.png" width="450" height="300">
+<img alt="Nginx" src="https://mirror.bjtu.edu.cn/status/nginx.png" width="450" height="300">
+<img alt="Active Connections" src="https://mirror.bjtu.edu.cn/status/active_connections.png" width="210" height="300">
+
+        
+  
+  <div class="sk-wave" id="sk-wave">
+    <div class="sk-rect sk-rect1"></div>
+    <div class="sk-rect sk-rect2"></div>
+    <div class="sk-rect sk-rect3"></div>
+    <div class="sk-rect sk-rect4"></div>
+    <div class="sk-rect sk-rect5"></div>
+  </div>
+  <div id="indexTable">
+  </div>
+  <script type="text/javascript">
+    function buildIndexTable(descHelp) {
+      // $("#indexTable").empty();
+      // $("#sk-wave").show();
+      $.getJSON("/status/task_status.json", function (taskStatus) {
+        var innerHTML = "<table class=\"table table-hover\"><thead><tr class=\"row\"><th class=\"col-sm-8\">镜像名称</th><th class=\"col-sm-4\">同步状态</th></tr></thead><tbody>";
+        for (mirror in taskStatus) {
+          if (descHelp[mirror] == null) {
+            continue;
+          }
+          if (taskStatus[mirror]["status"] === 2 && (taskStatus[mirror]["exitcode"] === 0 || (mirror === "pypi" && taskStatus[mirror]["exitcode"] === 1))) {
+            innerHTML += "<tr class=\"row\">";
+          } else if (taskStatus[mirror]["status"] === 1 || taskStatus[mirror]["status"] === 0) {
+            innerHTML += "<tr class=\"row info\">";
+          } else if (taskStatus[mirror]["exitcode"] !== 0) {
+            innerHTML += "<tr class=\"row warning\">";
+          } else {
+            innerHTML += "<tr class=\"row danger\">"
+          }
+          innerHTML += "<td class=\"col-md-8\">";
+          if (descHelp[mirror]["desc"]) {
+            innerHTML += ("<a data-toggle=\"popover\" data-trigger=\"hover\" data-placement=\"right\" title=\"" + mirror + "\" data-content=\"" + descHelp[mirror]["desc"] + "\" href=\"" + descHelp[mirror]["link"] + "\">" + mirror + "</a>");
+          } else {
+            innerHTML += ("<a href=\"" + descHelp[mirror]["link"] + "\">" + mirror + "</a>");
+          }
+          if (descHelp[mirror] && descHelp[mirror]["help"]) {
+            innerHTML += ("  " + "<a href=\"" + descHelp[mirror]["help"] + "\"><i title=\"Help\" class=\"fa fa-question-circle\"></i></a>");
+          }
+          innerHTML += "</td><td class=\"col-md-4\">";
+          innerHTML += taskStatus[mirror]["date"];
+          if (taskStatus[mirror]["status"] === 2 && (taskStatus[mirror]["exitcode"] === 0 || (mirror === "pypi" && taskStatus[mirror]["exitcode"] === 1))) {
+            innerHTML += ("  " + "<span class=\"label label-success\">success</span>");
+          } else if (taskStatus[mirror]["status"] === 1 || taskStatus[mirror]["status"] === 0) {
+            innerHTML += ("  " + "<span class=\"label label-info\">syncing</span>");
+          } else if (taskStatus[mirror]["exitcode"] !== 0) {
+            innerHTML += ("  " + "<span class=\"label label-warning\">failed</span>");
+          } else {
+            innerHTML += ("  " + "<span class=\"label label-danger\">unknown</span>");
+          }
+          innerHTML += "</td></tr>";
+        }
+        innerHTML += "</tbody></table>"
+        $("#indexTable").empty().append(innerHTML);
+        $("#sk-wave").hide();
+        $("[data-toggle=\"popover\"]").popover();
+      });
+    }
+    $(document).ready(function () {
+      $("#sk-wave").show();
+      $.getJSON("/help/desc_help.json", function (descHelp) {
+        buildIndexTable(descHelp);
+        setInterval(function () {
+          buildIndexTable(descHelp);
+        }, 300000);
+      });
+    });
+  </script>
+
+
+
+      </div>
+    </div>
+    
+    
+  <footer class="footer">
+    <script type="text/javascript">
+      var cur = Date.now();
+    </script>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-3" style="margin-bottom: 5px;">
+          
+            <p>CopyLeft © 2005 - 2022 <a href="http://bjtu.edu.cn/" target="_blank">河北沙城中学</a></p>
+          
+          <p>由 Hexo 强力推进</p>
+          <p>使用 mirror 作为镜像管理器</p>
+          
+            <p>BJTUICP备21042601</p>
+          
+        </div>
+        <div class="col-lg-5 col-md-5" style="margin-bottom: 5px;">
+          
+            <p>由 河北沙城中学 Linux 用户协会 维护</p> <p>感谢 <a href="http://aliyun.com/" target="_blank">阿里云</a> 提供服务器、存储、带宽</p> <p>特别感谢 维护者 TUBUG Ideal AlynxZhou Chestnut Paul Zhang</p> <p>如果遇到问题请联系 Chestnut#hbsczx@tubug.cn 或是在Github hbsczx 项目中提交issue </p>
+          
+        </div>
+        <div class="col-lg-4 col-md-4" style="margin-bottom: 5px;">
+          
+            <img class="img-responsive" height="110px" width="110px" src="/images/bjtu_logo.png">
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  </body>
+</html>

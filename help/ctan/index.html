@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+    
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="开源镜像,北交大开源镜像,mirror,open source,BJTU">
+	<meta name="subtitle" content="SHACHENG MIDDLE SCHOOL Open Source Software Mirror">
+	<meta name="description" content="Beijing Jiaotong University free and open source software mirror,河北沙城中学开源镜像站。">
+	<meta name="author" content="AlynxZhou">
+	<title>CTAN 镜像使用帮助 - 河北沙城中学开源软件镜像站</title>
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="stylesheet" href="/css/index.css">
+	<link rel="stylesheet" href="/css/spinkit.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+
+  </head>
+  <body>
+    
+  <nav class="menu-nav navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">河北沙城中学开源软件镜像站</a>
+      </div>
+      <div class="collapse navbar-collapse navbar-right" id="navbar">
+        <ul class="nav navbar-nav">
+          
+            
+              <li><a href="/">首页</a></li>
+            
+          
+            
+              <li class="active"><a href="/help/">帮助</a></li>
+            
+          
+            
+              <li><a href="/news/">新闻</a></li>
+            
+          
+            
+              <li><a href="/status/">状态</a></li>
+            
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+    
+  <div class="container">
+    <div class="row">
+      <div id="helpList">
+        <div class="sk-wave col-sm-2 hidden-xs">
+          <div class="sk-rect sk-rect1"></div>
+          <div class="sk-rect sk-rect2"></div>
+          <div class="sk-rect sk-rect3"></div>
+          <div class="sk-rect sk-rect4"></div>
+          <div class="sk-rect sk-rect5"></div>
+        </div>
+        <div class="sk-wave col-sm-10 visible-xs">
+          <div class="sk-rect sk-rect1"></div>
+          <div class="sk-rect sk-rect2"></div>
+          <div class="sk-rect sk-rect3"></div>
+          <div class="sk-rect sk-rect4"></div>
+          <div class="sk-rect sk-rect5"></div>
+        </div>
+      </div>
+      <div class="content col-sm-10">
+        <h1>CTAN 镜像使用帮助</h1>
+        <h3>CTAN (The Comprehensive TeX Archive Network) 镜像源可以使用 TeX Live 管理器 tlmgr 更改。</h3>
+
+<p>在命令行中执行</p>
+<pre class="highlight-rough">
+<code>tlmgr option repository https://mirror.bjtu.edu.cn/ctan/systems/texlive/tlnet</code>
+</pre>
+<p>即可永久更改镜像源。</p>
+
+<p>如果只需要临时切换，可以用如下命令：</p>
+<pre class="highlight-rough">
+<code>tlmgr update --all --repository https://mirror.bjtu.edu.cn/ctan/systems/texlive/tlnet</code>
+</pre>
+<p>其中的<code class="highlight-rouge">update --all</code>指令可根据需要修改。</p>
+
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function buildHelpList(intervalID) {
+      $.getJSON("/help/desc_help.json", function (descHelp) {
+        var innerHTML = "";
+        var currentPath = window.document.location.pathname;
+        if (currentPath.charAt(0) !== '/') {
+          currentPath = "/" + currentPath;
+        }
+        if (currentPath.charAt(currentPath.length - 1) !== '/') {
+          currentPath += "/";
+        }
+        innerHTML += "<div class=\"col-sm-2 hidden-xs\"><ul class=\"nav nav-pills nav-stacked\" id=\"help-nav\">";
+        if (currentPath === "/help/") {
+          innerHTML += "<li class=\"active\"><a href=\"/help/\">index</a></li>";
+        } else {
+          innerHTML += "<li><a href=\"/help/\">index</a></li>";
+        }
+        for (mirror in descHelp) {
+          if (descHelp[mirror]["help"]) {
+            if (currentPath === descHelp[mirror]["help"]) {
+              innerHTML += ("<li class=\"active\"><a href=\"" + descHelp[mirror]["help"] + "\">" + mirror + "</a></li>");
+            } else {
+              innerHTML += ("<li><a href=\"" + descHelp[mirror]["help"] + "\">" + mirror + "</a></li>");
+            }
+          }
+        }
+        innerHTML += "</ul></div><div class=\"col-sm-10 visible-xs\"><form class=\"form-inline\"><div class=\"form-group\"><label>选择帮助条目: </label><select onchange=\"location = this.value;\" class=\"form-control\" id=\"help-select\">";
+        if (currentPath === "/help/") {
+          innerHTML += "<option value=\"/help/\" selected>index</option>";
+        } else {
+          innerHTML += "<option value=\"/help/\">index</option>";
+        }
+        for (mirror in descHelp) {
+          if (descHelp[mirror]["help"]) {
+            if (currentPath === descHelp[mirror]["help"]) {
+              innerHTML += ("<option value=\"" + descHelp[mirror]["help"] + "\" selected>" + mirror + "</option>");
+            } else {
+              innerHTML += ("<option value=\"" + descHelp[mirror]["help"] + "\">" + mirror + "</option>");
+            }
+          }
+        }
+        innerHTML += "</select></div></form></div>";
+        $("#helpList").empty().append(innerHTML);
+        if (intervalID !== null) {
+          clearInterval(intervalID);
+        }
+      });
+    }
+    $(document).ready(function () {
+      var intervalID = null;
+      buildHelpList(intervalID);
+      intervalID = setInterval(function () {
+        buildHelpList(intervalID)
+      }, 10000);
+    });
+  </script>
+
+    
+  <footer class="footer">
+    <script type="text/javascript">
+      var cur = Date.now();
+    </script>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-3" style="margin-bottom: 5px;">
+          
+            <p>CopyLeft © 2005 - 2022 <a href="http://bjtu.edu.cn/" target="_blank">河北沙城中学</a></p>
+          
+          <p>由 Hexo 强力推进</p>
+          <p>使用 mirror 作为镜像管理器</p>
+          
+            <p>BJTUICP备21042601</p>
+          
+        </div>
+        <div class="col-lg-5 col-md-5" style="margin-bottom: 5px;">
+          
+            <p>由 河北沙城中学 Linux 用户协会 维护</p> <p>感谢 <a href="http://aliyun.com/" target="_blank">阿里云</a> 提供服务器、存储、带宽</p> <p>特别感谢 维护者 TUBUG Ideal AlynxZhou Chestnut Paul Zhang</p> <p>如果遇到问题请联系 Chestnut#hbsczx@tubug.cn 或是在Github hbsczx 项目中提交issue </p>
+          
+        </div>
+        <div class="col-lg-4 col-md-4" style="margin-bottom: 5px;">
+          
+            <img class="img-responsive" height="110px" width="110px" src="/images/bjtu_logo.png">
+          
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  </body>
+</html>
